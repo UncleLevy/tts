@@ -5,6 +5,7 @@ import wave
 import threading
 from queue import Queue
 import logging
+import platform
 
 class TTSService:
     def __init__(self):
@@ -13,6 +14,7 @@ class TTSService:
         self.is_speaking = False
         self._setup_engine()
         self.logger = logging.getLogger(__name__)
+        self.default_device = self.get_default_device()
 
     def _setup_engine(self):
         try:
@@ -24,6 +26,14 @@ class TTSService:
                 self.engine.setProperty('voice', voices[0].id)
         except Exception as e:
             self.logger.error(f"Error setting up engine: {str(e)}")
+
+    def get_default_device(self):
+        if platform.system() == 'Windows':
+            return 'DirectSound'
+        elif platform.system() == 'Darwin':  # macOS
+            return 'CoreAudio'
+        else:  # Linux
+            return 'pulse'
 
     def _audio_callback(self, name, completed):
         try:

@@ -1,0 +1,10 @@
+//Test the web socket connection
+let ws = new WebSocket('ws://localhost:8000/ws/tts/');
+ws.onopen = () => console.log('Connected!');
+ws.onerror = (e) => console.error('Error:', e);
+
+//Run the server using Daphne
+daphne tts_backend.asgi:application
+
+//Test the socket in browser console
+ws://localhost:8000/ws/tts/
